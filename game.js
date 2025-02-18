@@ -21,25 +21,50 @@ function handSelection() {
 }
 
 function aiChoice() {
-  return hands[Math.floor(Math.random() * 3)].dataset.option;
+  const randomIndex = Math.floor(Math.random() * hands.length);
+  return hands[randomIndex].dataset.option;
 }
 
 //sprawdzamy wniki gracza i komputera
 function checkResult(player, ai) {
   if (player === ai) {
-    console.log("remis");
+    return "draw";
   } else if (
     (player === "papier" && ai === "kamień") ||
     (player === "kamień" && ai === "nożyczki") ||
     (player === "nożyczki" && ai === "papier")
   ) {
-    console.log("wygrałeś");
+    return "win";
   } else {
-    console.log("przegrałeś");
+    return "loss";
+  }
+}
+//pokaz wyniku
+//funkcja sterująca
+function publishResult(player, ai, result) {
+  document.querySelector('[data-summary="your-choice"]').textContent = player;
+  document.querySelector('[data-summary="ai-choice"]').textContent = ai;
+
+  gameSummary.numbers++;
+  document.querySelector("p.numbers span").textContent = gameSummary.numbers;
+
+  if (result === "win") {
+    gameSummary.wins++;
+    document.querySelector("p.wins span").textContent = gameSummary.wins;
+    document.querySelector('[data-summary="who-win"]').textContent =
+      "Ty wygrałeś!";
+  } else if (result === "loss") {
+    gameSummary.losses++;
+    document.querySelector("p.losses span").textContent = gameSummary.losses;
+    document.querySelector('[data-summary="who-win"]').textContent =
+      "Komputer wygrał...";
+  } else {
+    gameSummary.draws++;
+    document.querySelector("p.draws span").textContent = gameSummary.draws;
+    document.querySelector('[data-summary="who-win"]').textContent = "Remis";
   }
 }
 
-//funkcja sterująca
 function startGame() {
   if (!game.playerHand) {
     return alert("Wybierz dłoń");
@@ -47,6 +72,7 @@ function startGame() {
 
   game.aiHand = aiChoice();
   const gameResult = checkResult(game.playerHand, game.aiHand);
+  publishResult(game.playerHand, game.aiHand, gameResult);
 }
 
 hands.forEach((hand) => hand.addEventListener("click", handSelection));
