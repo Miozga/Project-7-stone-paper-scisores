@@ -18,6 +18,7 @@ function handSelection() {
 
   hands.forEach((hand) => (hand.style.boxShadow = ""));
   this.style.boxShadow = "0 0 0 4px blue";
+  return game.playerHand;
 }
 
 function aiChoice() {
@@ -38,6 +39,12 @@ function checkResult(player, ai) {
   } else {
     return "loss";
   }
+}
+
+function endGame() {
+  document.querySelector(`[data-option="${game.playerHand}"]`).style.boxShadow =
+    "";
+  game.playerHand = "";
 }
 //pokaz wyniku
 //funkcja sterująca
@@ -73,6 +80,7 @@ function startGame() {
   game.aiHand = aiChoice();
   const gameResult = checkResult(game.playerHand, game.aiHand);
   publishResult(game.playerHand, game.aiHand, gameResult);
+  endGame();
 }
 
 hands.forEach((hand) => hand.addEventListener("click", handSelection));
